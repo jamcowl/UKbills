@@ -1,2 +1,3 @@
-# UKbills
-Bot to post info from parliament RSS feeds about new bills
+# Reddit bot /u/UKBills
+
+Info about bot
