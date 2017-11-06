@@ -1,3 +1,3 @@
-# Reddit bot /u/UKBills
+# Source code for [/u/UKBills](https://www.reddit.com/user/UKbills/)
 
-Info about bot
+For transparency, this is the full code that runs the bot.
