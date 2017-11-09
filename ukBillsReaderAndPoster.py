@@ -105,7 +105,10 @@ while(True):
 			if "[HL]" in latestUpdate['description']: # check if it was started in the Lords
 				fromHouse = "Lords"
 			progress = getProgress(fromHouse,currentHouse,stage)
-
+                        if progress < 0: # progress bugged out
+                                print " > UKbills: stage '"+str(stage)+"' unknown, skipping for now and will retry next time."
+                                continue
+                
 			# construct post title
 			info = "[Stage "+str(progress)+"/12]["+currentHouse+", "+stage+"] "+billName
 			if len(info) > 300:
