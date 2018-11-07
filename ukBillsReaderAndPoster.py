@@ -121,16 +121,18 @@ while(True):
 	
 			# submit to the subreddit
 			submission = subreddit.submit(info,url=link)
-			comment = submission.reply(extraInfo)
-			commentmod = praw.models.reddit.comment.CommentModeration(comment)
-			commentmod.distinguish(how='yes', sticky=True)
-			print " > UKbills: posted to subreddit: "+info
-			#raw_input(" > UKbills: Paused. Press any key to continue.")
-			
+
 			# record this update as already posted
 			outputFile = open(logFileName,'a')
 			outputFile.write(timeStamp+"\n")
 			outputFile.close()
+
+                        # post supplementary comment info
+                        comment = submission.reply(extraInfo)
+			commentmod = praw.models.reddit.comment.CommentModeration(comment)
+			commentmod.distinguish(how='yes', sticky=True)
+			print " > UKbills: posted to subreddit: "+info
+			#raw_input(" > UKbills: Paused. Press any key to continue.")
 
 	# catch bugs and try again
 	except Exception, e:
