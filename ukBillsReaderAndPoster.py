@@ -1,28 +1,22 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
-print "Importing libraries..."
+print("Importing libraries...")
 import feedparser, sys, re, praw, time
-print "Imports done."
-
-# read login info and secret stuff from a file
-loginFile='../redditBotLogins/ukBillsLogin.dat'
-with open(loginFile,'r') as f:
-	bot_user = f.readline().strip()
-	bot_pass = f.readline().strip()
-	bot_id = f.readline().strip()
-	bot_secret = f.readline().strip()
+sys.path.append("../logins")
+import bots
+print("Imports done.")
 
 # set up reddit script application with login info
-reddit = praw.Reddit(client_id=bot_id,
-		client_secret=bot_secret,
-		password=bot_pass,
-		user_agent='UKBills bot',
-		username=bot_user)
+reddit = praw.Reddit(client_id=bots.ukbills_id,
+		client_secret=bots.ukbills_secret,
+		password=bots.ukbills_password,
+		user_agent='UKbills',
+		username=bots.ukbills_username)
 
 # check connection and login success
-print " > UKbills: Testing Reddit connection..."
+print(" > UKbills: Testing Reddit connection...")
 username = str(reddit.user.me())
-print " > UKbills: Logged in as /u/"+username
+print(" > UKbills: Logged in as /u/"+username)
 
 subreddit = reddit.subreddit('UKbills')
 
@@ -87,7 +81,7 @@ while(True):
 			
 			# check if posted already
 			if hasBeenPosted(timeStamp,logFileName):
-				print " > UKbills: Already posted update from "+timeStamp+", moving on..."
+				print(" > UKbills: Already posted update from "+timeStamp+", moving on...")
 				continue
 			
 			# get links
@@ -105,10 +99,10 @@ while(True):
 			if "[HL]" in latestUpdate['description']: # check if it was started in the Lords
 				fromHouse = "Lords"
 			progress = getProgress(fromHouse,currentHouse,stage)
-                        if progress < 0: # progress bugged out
-                                print " > UKbills: stage '"+str(stage)+"' unknown, skipping for now and will retry next time."
-                                continue
-                
+			if progress < 0: # progress bugged out
+				print(" > UKbills: stage '"+str(stage)+"' unknown, skipping for now and will retry next time.")
+				continue
+			 
 			# construct post title
 			info = "[Stage "+str(progress)+"/12]["+currentHouse+", "+stage+"] "+billName
 			if len(info) > 300:
@@ -127,23 +121,23 @@ while(True):
 			outputFile.write(timeStamp+"\n")
 			outputFile.close()
 
-                        # post supplementary comment info
-                        comment = submission.reply(extraInfo)
+			# post supplementary comment info
+			comment = submission.reply(extraInfo)
 			commentmod = praw.models.reddit.comment.CommentModeration(comment)
 			commentmod.distinguish(how='yes', sticky=True)
-			print " > UKbills: posted to subreddit: "+info
+			print(" > UKbills: posted to subreddit: "+info)
 			#raw_input(" > UKbills: Paused. Press any key to continue.")
 
 	# catch bugs and try again
-	except Exception, e:
-		print " > UKbills: Got an error: "+str(e)
-		print " > UKbills: Trying again..."
+	except Exception as e:
+		print(" > UKbills: Got an error: "+str(e))
+		print(" > UKbills: Trying again...")
 		continue
 
 	# done checking for updates, wait 15 mins and look again
 	for i in range(15,0,-1):
-		print " > UKbills: Waiting "+str(i)+" minutes..."
+		print(" > UKbills: Waiting "+str(i)+" minutes...")
 		time.sleep(60)
 		
-	print " > UKbills: looping round again..."
+	print(" > UKbills: looping round again...")
 
